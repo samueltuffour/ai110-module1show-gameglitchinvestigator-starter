@@ -1,5 +1,6 @@
 import random
 import streamlit as st
+from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -11,7 +12,7 @@ def get_range_for_difficulty(difficulty: str):
     return 1, 100
 
 
-def parse_guess(raw: str):
+def parse_guess(raw: str, low: int = 1, high: int = 100):
     if raw is None:
         return False, None, "Enter a guess."
 
@@ -26,6 +27,10 @@ def parse_guess(raw: str):
     except Exception:
         return False, None, "That is not a number."
 
+    # FIX: Added range validation to reject guesses outside the valid range
+    if value < low or value > high:
+        return False, None, f"Please guess a number between {low} and {high}."
+    
     return True, value, None
 
 
@@ -34,17 +39,18 @@ def check_guess(guess, secret):
         return "Win", "🎉 Correct!"
 
     try:
+        # FIX: Corrected backwards hint messages
         if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
+            return "Too High", "📉 Go LOWER!"
         else:
-            return "Too Low", "📉 Go LOWER!"
+            return "Too Low", "📈 Go HIGHER!"
     except TypeError:
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+            return "Too High", "� Go LOWER!"
+        return "Too Low", "📈 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -147,7 +153,7 @@ if st.session_state.status != "playing":
 if submit:
     st.session_state.attempts += 1
 
-    ok, guess_int, err = parse_guess(raw_guess)
+    ok, guess_int, err = parse_guess(raw_guess, low, high)
 
     if not ok:
         st.session_state.history.append(raw_guess)
