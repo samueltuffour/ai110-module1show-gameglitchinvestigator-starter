@@ -4,11 +4,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ## 1. What was broken when you started?
 
-When I first ran the game, I noticed that it had no input validation for the guessing range. The game accepts numbers outside the valid range of 1-100. For example, it would accept negative numbers like -34 as valid guesses instead of rejecting them. Additionally, numbers over 100 were also accepted—the game would even say "Go HIGHER!" for numbers well past 100, completely ignoring the stated range limit. This meant the game wasn't enforcing its own rules about what constitutes a valid guess.
-
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the hints were backwards").
+When I first ran the game, I noticed that it had no input validation for the guessing range. The game accepts numbers outside the valid range of 1-100. For example, it would accept negative numbers like -34 as valid guesses instead of rejecting them. Additionally, numbers over 100 were also accepted. The game would even say "Go HIGHER!" for numbers well past 100, completely ignoring the stated range limit. This meant the game wasn't enforcing its own rules about what constitutes a valid guess.
 
 ---
 
@@ -20,7 +16,7 @@ When I first ran the game, I noticed that it had no input validation for the gue
 The AI correctly identified that the `parse_guess()` function was missing range validation. I asked Copilot to help fix the "accepts negative numbers and numbers over 100" bug. Copilot suggested adding a condition to check if the parsed value was within the valid range (low to high) and return an error message if not. I verified this was correct by writing pytest tests that confirmed `-34` and `150` are now properly rejected with clear error messages like "Please guess a number between 1 and 100."
 
 **Incorrect/Misleading AI Suggestion:**
-Initially, I had asked Copilot to "look at the backwards hints," but the AI initially suggested the problem was with emoji rendering rather than the actual logic. The emojis weren't the issue—the real bug was that when `guess > secret`, the message said "Go HIGHER!" when it should say "Go LOWER!" (the comparison logic was backwards). I verified this by examining the actual code flow: when my guess of 60 is greater than the secret 50, the game should tell me to guess lower, not higher. I confirmed the fix by running pytest tests that check the message content returns "Go LOWER!" when outcome is "Too High".
+Initially, I had asked Copilot to "look at the backwards hints," but the AI initially suggested the problem was with emoji rendering rather than the actual logic. The emojis weren't the issue, the real bug was that when `guess > secret`, the message said "Go HIGHER!" when it should say "Go LOWER!" (the comparison logic was backwards). I verified this by examining the actual code flow: when my guess of 60 is greater than the secret 50, the game should tell me to guess lower, not higher. I confirmed the fix by running pytest tests that check the message content returns "Go LOWER!" when outcome is "Too High".
 
 ---
 
@@ -59,4 +55,4 @@ I learned that Streamlit reruns the entire script from top to bottom every time 
 
 **What I'd do differently:** Next time I work with AI on a coding task, I'll be more skeptical of the AI's first suggestion. When Copilot initially suggested the emoji rendering was the problem, I took a step back and read the actual code flow instead of blindly trusting the AI. In the future, I'll ask AI to explain WHY it thinks something is wrong, not just WHAT to do. This forces me to understand the root cause rather than applying surface-level fixes.
 
-**How this changed my thinking:** This project showed me that AI-generated code isn't inherently "bad"—it just needs verification and critical thinking. The AI didn't intentionally write buggy code; it made logical errors that are completely fixable once identified. I now see AI code as a starting point that requires testing and review, not as gospel truth. The value of working with AI isn't in blindly accepting its output, but in using it as a collaborative tool where I stay in control of validation and decision-making.
+**How this changed my thinking:** This project showed me that AI-generated code isn't inherently "bad" it just needs verification and critical thinking. The AI didn't intentionally write buggy code; it made logical errors that are completely fixable once identified. I now see AI code as a starting point that requires testing and review, not as gospel truth. The value of working with AI isn't in blindly accepting its output, but in using it as a collaborative tool where I stay in control of validation and decision-making.
